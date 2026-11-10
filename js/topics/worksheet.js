@@ -30,6 +30,8 @@ export const EXAMPLES = [
   ['Decimaltal', 'evalf(sqrt(2) + pi)'],
   ['Indsæt', 'subs(x = 2, x^3 + 1)'],
   ['Tegn grafer', 'plot([sin(x), cos(x)], x = -6..6)'],
+  ['Regression', 'linreg([1, 2, 3, 4], [2.1, 3.9, 6.2, 7.8])'],
+  ['Statistik', 'median([4, 8, 15, 16, 23, 42])'],
 ];
 
 export function mountWorksheet(root) {

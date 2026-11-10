@@ -26,8 +26,10 @@ const decimalsFor = (step) => Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
 export class Graph {
   /** Rydder grafer, der ikke længere er på siden. */
   static prune() {
-    for (const g of instances) if (!g.root.isConnected) g.destroy();
+    for (const g of instances) if (!g.root.isConnected) { g.destroy(); instances.delete(g); }
   }
+  /** Lad en anden visning (fx 3D) blive ryddet op sammen med graferne. */
+  static track(o) { instances.add(o); }
 
   constructor(parent, opts = {}) {
     this.opts = { xmin: -10, xmax: 10, ymin: -7, ymax: 7, equalAspect: true, aspect: null, ...opts };
@@ -316,6 +318,16 @@ export class Graph {
         break;
       }
       case 'area': this._area(it, col); break;
+      case 'ellipse': {
+        // lodret ellipse (fx et tværsnit af et omdrejningslegeme): ry i enheder, rx i pixels
+        const ry = Math.abs(this.sy(it.y + it.ry) - this.sy(it.y));
+        if (ry < 0.5) break;
+        ctx.beginPath();
+        ctx.ellipse(this.sx(it.x), this.sy(it.y), it.rx ?? ry * 0.3, ry, 0, 0, Math.PI * 2);
+        if (it.fill) { ctx.globalAlpha = it.alpha ?? 0.12; ctx.fill(); ctx.globalAlpha = 1; }
+        ctx.stroke();
+        break;
+      }
       case 'path': {
         // polylinje gennem punkter [[x, y], ...] – NaN bryder linjen
         ctx.beginPath();
@@ -364,6 +376,19 @@ export class Graph {
     const a = Math.max(Math.min(it.a, it.b), this.view.xmin), b = Math.min(Math.max(it.a, it.b), this.view.xmax);
     if (!(b > a)) return;
     const n = Math.max(2, Math.ceil(this.sx(b) - this.sx(a)));
+    if (it.g) {
+      // areal mellem to grafer
+      const clampY = (y) => Math.max(-this.h, Math.min(2 * this.h, this.sy(Number.isFinite(y) ? y : 0)));
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) { const x = a + ((b - a) * i) / n; ctx[i ? 'lineTo' : 'moveTo'](this.sx(x), clampY(it.f(x))); }
+      for (let i = n; i >= 0; i--) { const x = a + ((b - a) * i) / n; ctx.lineTo(this.sx(x), clampY(it.g(x))); }
+      ctx.closePath();
+      ctx.fillStyle = col;
+      ctx.globalAlpha = it.alpha ?? 0.25;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      return;
+    }
     for (const [sign, color] of [[1, col], [-1, this.color(it.colorNeg ?? it.color)]]) {
       ctx.beginPath();
       ctx.moveTo(this.sx(a), this.sy(0));

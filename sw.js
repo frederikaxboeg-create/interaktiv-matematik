@@ -2,7 +2,7 @@
  * Strategi: svar straks fra cachen og hent en frisk version i baggrunden
  * (stale-while-revalidate), så opdateringer slår igennem ved næste åbning.
  * Hæv CACHE-versionen, når du udgiver ændringer. */
-const CACHE = 'interaktiv-matematik-v8';
+const CACHE = 'interaktiv-matematik-v9';
 const FILES = [
   './',
   'index.html',
@@ -10,12 +10,14 @@ const FILES = [
   'css/style.css',
   'js/cas.js',
   'js/graph.js',
+  'js/graph3d.js',
   'js/main.js',
   'js/mathinput.js',
   'js/parser.js',
   'js/practice.js',
   'js/progress.js',
   'js/pwa.js',
+  'js/stats.js',
   'js/ui.js',
   'js/util.js',
   'js/topics/circle.js',
@@ -23,17 +25,24 @@ const FILES = [
   'js/topics/diffeq.js',
   'js/topics/equations.js',
   'js/topics/exponential.js',
+  'js/topics/functions.js',
   'js/topics/help.js',
+  'js/topics/hypothesis.js',
   'js/topics/index.js',
   'js/topics/integral.js',
   'js/topics/linear.js',
   'js/topics/normal.js',
+  'js/topics/numbers.js',
   'js/topics/percent.js',
   'js/topics/plotter.js',
   'js/topics/power.js',
   'js/topics/probability.js',
   'js/topics/quadratic.js',
+  'js/topics/regression.js',
+  'js/topics/space.js',
+  'js/topics/statistics.js',
   'js/topics/trig.js',
+  'js/topics/trigfunc.js',
   'js/topics/vectors.js',
   'js/topics/worksheet.js',
   'icons/apple-touch-icon.png',

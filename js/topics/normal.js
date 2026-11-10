@@ -1,6 +1,6 @@
 import { Graph } from '../graph.js';
 import { el, math, slider, toggle, exploreLayout, card, hint, segmented } from '../ui.js';
-import { rint, pick, shuffle, tn, num, near, clamp } from '../util.js';
+import { rint, pick, shuffle, tn, num, near, clamp, plus } from '../util.js';
 import { binom } from './probability.js';
 
 // ---------- matematik ----------
@@ -237,7 +237,7 @@ const exercises = [
         prompt: `${c.what} er normalfordelt med $\\mu=${c.mu}$ og $\\sigma=${c.sigma}$ (${c.unit}). Bestem den værdi $a$, så $${tn(p * 100)}\\,\\%$ ligger under $a$. Afrund til én decimal.`,
         fields: [{ label: 'a', answer: a, tol: 0.06 }],
         hint: `Find $z$, så $\\Phi(z)=${tn(p)}$, og regn tilbage: $a=\\mu+z\\cdot\\sigma$.`,
-        solution: `$$\\Phi(z)=${tn(p)}\\;\\Rightarrow\\; z\\approx ${tn(invPhi(p), 4)}$$ $$a=${c.mu}+${tn(invPhi(p), 4)}\\cdot ${c.sigma}\\approx ${tn(a, 1)}$$`,
+        solution: `$$\\Phi(z)=${tn(p)}\\;\\Rightarrow\\; z\\approx ${tn(invPhi(p), 4)}$$ $$a=${c.mu}${plus(invPhi(p), 4)}\\cdot ${c.sigma}\\approx ${tn(a, 1)}$$`,
       };
     },
   },

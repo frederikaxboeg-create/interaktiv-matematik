@@ -148,6 +148,10 @@ function casHelp(root) {
       ['Decimaltal', 'evalf(e^2)'],
       ['Indsæt en værdi', 'subs(x = 3, x^2 + 2x)'],
       ['Tegn graf(er)', 'plot([x^2, 2x + 3], x = -3..4)'],
+      ['Lineær regression', 'linreg([1, 2, 3, 4], [2.1, 3.9, 6.2, 7.8])'],
+      ['Eksponentiel regression', 'expreg([0, 1, 2, 3], [5, 7.6, 11, 17])'],
+      ['Potensregression', 'powreg([1, 2, 4, 8], [3, 4.2, 6, 8.5])'],
+      ['Middelværdi, median, spredning', 'mean([3, 5, 8, 10])'],
     ])}
 
     <h2>Gode råd</h2>

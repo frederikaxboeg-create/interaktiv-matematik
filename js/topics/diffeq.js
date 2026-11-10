@@ -373,6 +373,25 @@ const exercises = [
     },
   },
   {
+    id: 'separation',
+    title: 'Separation af de variable',
+    make() {
+      const bank = [
+        { de: "y'=x\\cdot y", right: 'y=c\\cdot e^{\\frac12x^2}', w: ['y=c\\cdot e^{x}', 'y=\\tfrac12x^2+c', 'y=c\\cdot x^2'], steps: '\\int\\frac1y\\,dy=\\int x\\,dx\\;\\Rightarrow\\;\\ln|y|=\\tfrac12x^2+k' },
+        { de: "y'=\\frac{x}{y}", right: 'y=\\pm\\sqrt{x^2+c}', w: ['y=c\\cdot e^{x^2}', 'y=x+c', 'y=\\frac{c}{x}'], steps: '\\int y\\,dy=\\int x\\,dx\\;\\Rightarrow\\;\\tfrac12y^2=\\tfrac12x^2+k' },
+        { de: "y'=2x\\cdot y^2", right: 'y=\\dfrac{-1}{x^2+c}', w: ['y=c\\cdot e^{x^2}', 'y=x^2y+c', 'y=\\dfrac{1}{x^2}+c'], steps: '\\int\\frac{1}{y^2}\\,dy=\\int2x\\,dx\\;\\Rightarrow\\;-\\frac1y=x^2+c' },
+        { de: "y'=y\\cdot\\cos(x)", right: 'y=c\\cdot e^{\\sin(x)}', w: ['y=c\\cdot e^{\\cos(x)}', 'y=\\sin(x)+c', 'y=c\\cdot\\sin(x)'], steps: '\\int\\frac1y\\,dy=\\int\\cos x\\,dx\\;\\Rightarrow\\;\\ln|y|=\\sin x+k' },
+      ];
+      const r = pick(bank);
+      return {
+        prompt: `Løs differentialligningen $${r.de}$ ved separation af de variable. Hvilken er den fuldstændige løsning?`,
+        choices: shuffle([{ html: `$${r.right}$`, correct: true }, ...r.w.map((w) => ({ html: `$${w}$` }))]),
+        hint: 'Saml alt med $y$ på den ene side (sammen med $dy$) og alt med $x$ på den anden (sammen med $dx$), og integrér begge sider.',
+        solution: `$$${r.steps}$$ Isolér $y$: $$${r.right}$$`,
+      };
+    },
+  },
+  {
     id: 'traeklinjeelement',
     title: 'Tegn linjeelementet',
     interactive: true,

@@ -9,22 +9,20 @@ En interaktiv matematik-app til gymnasiet. Den kan bruges som hjemmeside, instal
 
 ## Indhold
 
-Appen følger kernestoffet i Matematik A og er delt op i kategorier:
+Appen dækker hele kernestoffet i Matematik A og er delt op i kategorier:
 
 - **Emner** (ordnet efter kernestoffets områder) – hvert emne har fanerne *Lær* (teori og eksempler), *Udforsk* (træk i grafer og figurer) og *Øv dig* (opgaver):
-  - *Tal og algebra:* Procent og rente
-  - *Geometri, trigonometri og vektorer:* Trigonometri, Vektorer i planen, Cirklen og analytisk geometri
-  - *Funktioner og infinitesimalregning:* Lineære, andengrads-, eksponentielle og potensfunktioner, Differentialregning, Integralregning, Differentialligninger
-  - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen, Normalfordelingen
+  - *Tal og algebra:* Tal og algebra (talmængder, hierarki, kvadratsætninger, potenser, brøker, proportionalitet), Procent og rente, Løs ligninger
+  - *Geometri, trigonometri og vektorer:* Trigonometri (inkl. ensvinklede trekanter), Vektorer i planen (inkl. parameterfremstilling og projektion), Cirklen og analytisk geometri, Vektorer i rummet (drejelig 3D-visning)
+  - *Funktioner og infinitesimalregning:* Funktioner (forskydning, sammensatte funktioner, logaritmer, polynomier), lineære, andengrads-, eksponentielle og potensfunktioner, Trigonometriske funktioner, Regression, Differentialregning (inkl. monotoni, optimering, Newtons metode), Integralregning (inkl. areal mellem grafer, omdrejningslegemer, substitution), Differentialligninger
+  - *Sandsynlighed og statistik:* Deskriptiv statistik, Sandsynlighedsregning og binomialfordelingen, Normalfordelingen, Hypotesetest
 - **Interaktive øvelser** – alle opgaver, hvor man løser ved at trække i grafer, punkter og vektorer
 - **Løs ligninger** – otte ligningstyper med trin-for-trin-løsninger, en metodeoversigt og en ligningsløser
-- **CAS-regneark** – regn som i Maple: `f := x -> …`, `diff`, `int`, `solve`, `fsolve`, `factor`, `expand`, `evalf`, `subs` og `plot`
+- **CAS-regneark** – regn som i Maple: `f := x -> …`, `diff`, `int`, `solve`, `fsolve`, `factor`, `expand`, `evalf`, `subs`, `plot`, `linreg`/`expreg`/`powreg`, `mean`/`median`/`stdev`
 - **Graftegner**
 - **Hjælp** – alt om siden, matematiksproget og CAS-kommandoerne
 
 Alle indtastningsfelter viser det, du skriver, som pæn matematik (2D), mens du skriver.
-
-Emner fra kernestoffet, der endnu ikke er lavet, står som "Kommer senere" på forsiden.
 
 ## Installér som app
 
@@ -65,6 +63,8 @@ js/graph.js         Interaktivt koordinatsystem på canvas (zoom, panorering, tr
 js/cas.js           CAS-motor: parser, 2D-visning (TeX), forenkling, diff, int, solve
 js/parser.js        Udtryk i x → funktion (bygger på cas.js)
 js/mathinput.js     Live formelvisning og matematiktastatur
+js/stats.js         Statistik, regression og binomialfordeling
+js/graph3d.js       Drejelig 3D-visning (vektorer i rummet)
 js/practice.js      Opgavemotor: tjek af svar, hint, løsning, point
 js/progress.js      Point og fremskridt i localStorage
 js/ui.js, util.js   DOM-hjælpere, KaTeX-formler, talformatering med decimalkomma

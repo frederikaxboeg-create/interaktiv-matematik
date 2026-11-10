@@ -167,6 +167,59 @@ const exercises = [
     },
   },
   {
+    id: 'parameter',
+    title: 'Parameterfremstilling',
+    make() {
+      const P = { x: rint(-4, 4), y: rint(-4, 4) };
+      let r;
+      do r = { x: rint(-3, 3), y: rint(-3, 3) }; while (!r.x && !r.y);
+      const t = rintNZ(-3, 3);
+      if (Math.random() < 0.5) return {
+        prompt: `Linjen $\\ell$ har parameterfremstillingen $\\begin{pmatrix}x\\\\y\\end{pmatrix}=${vt(P.x, P.y)}+t\\cdot${vt(r.x, r.y)}$. Bestem punktet svarende til $t=${t}$.`,
+        fields: [{ label: 'x', answer: P.x + t * r.x }, { label: 'y', answer: P.y + t * r.y }],
+        hint: 'Indsæt $t$ og regn koordinatvis.',
+        solution: `$$${vt(P.x, P.y)}+${par(t)}\\cdot${vt(r.x, r.y)}=${vt(P.x + t * r.x, P.y + t * r.y)}$$`,
+      };
+      const on = Math.random() < 0.5, Q = on ? { x: P.x + t * r.x, y: P.y + t * r.y } : { x: P.x + t * r.x + (r.y ? 1 : 0), y: P.y + t * r.y + (r.y ? 0 : 1) };
+      return {
+        prompt: `Ligger punktet $Q(${Q.x},${Q.y})$ på linjen $\\begin{pmatrix}x\\\\y\\end{pmatrix}=${vt(P.x, P.y)}+t\\cdot${vt(r.x, r.y)}$?`,
+        choices: [{ html: 'Ja', correct: on }, { html: 'Nej', correct: !on }],
+        hint: 'Find $t$ fra den ene koordinat, og tjek om den samme $t$ passer i den anden.',
+        solution: on ? `Med $t=${t}$ fås netop $(${Q.x},${Q.y})$, så $Q$ ligger på linjen.` : 'Der findes ikke én værdi af $t$, der passer i begge koordinater, så $Q$ ligger ikke på linjen.',
+      };
+    },
+  },
+  {
+    id: 'vinkellinjer',
+    title: 'Vinkel mellem to linjer',
+    make() {
+      let r, s2;
+      do { r = { x: rintNZ(-4, 4), y: rint(-4, 4) }; s2 = { x: rint(-4, 4), y: rintNZ(-4, 4) }; } while (det(r, s2) === 0);
+      const v = angle(r, s2), acute = v > 90 ? 180 - v : v;
+      return {
+        prompt: `To linjer har retningsvektorerne $\\vec r=${vt(r.x, r.y)}$ og $\\vec s=${vt(s2.x, s2.y)}$. Bestem den spidse vinkel mellem linjerne. Afrund til én decimal.`,
+        fields: [{ label: 'v', answer: acute, tol: 0.06 }],
+        hint: 'Find vinklen mellem retningsvektorerne. Er den stump (over $90^\\circ$), er vinklen mellem linjerne $180^\\circ$ minus den.',
+        solution: `$$\\cos v=\\frac{${dot(r, s2)}}{\\sqrt{${r.x ** 2 + r.y ** 2}}\\cdot\\sqrt{${s2.x ** 2 + s2.y ** 2}}}\\;\\Rightarrow\\;v\\approx ${tn(v, 1)}^\\circ$$ ${v > 90 ? `Den spidse vinkel er $180^\\circ-${tn(v, 1)}^\\circ=${tn(acute, 1)}^\\circ$.` : ''}`,
+      };
+    },
+  },
+  {
+    id: 'projektion',
+    title: 'Projektion',
+    make() {
+      let a, b;
+      do { a = { x: rint(-5, 5), y: rint(-5, 5) }; b = { x: rint(-4, 4), y: rint(-4, 4) }; } while (!len(b) || !len(a));
+      const L = Math.abs(dot(a, b)) / len(b);
+      return {
+        prompt: `Bestem længden af projektionen af $\\vec a=${vt(a.x, a.y)}$ på $\\vec b=${vt(b.x, b.y)}$. Afrund til to decimaler.`,
+        fields: [{ label: '|\\vec a_{\\vec b}|', answer: L, tol: 0.006 }],
+        hint: '$|\\vec a_{\\vec b}|=\\dfrac{|\\vec a\\cdot\\vec b|}{|\\vec b|}$',
+        solution: `$$|\\vec a_{\\vec b}|=\\frac{|${dot(a, b)}|}{\\sqrt{${b.x ** 2 + b.y ** 2}}}\\approx ${tn(L)}$$`,
+      };
+    },
+  },
+  {
     id: 'tegnsum',
     title: 'Tegn summen',
     interactive: true,
@@ -242,6 +295,14 @@ const learn = `
 
 <h2>Projektion</h2>
 <div class="rule">$$\\vec a_{\\vec b}=\\frac{\\vec a\\cdot\\vec b}{|\\vec b|^2}\\,\\vec b\\qquad |\\vec a_{\\vec b}|=\\frac{|\\vec a\\cdot\\vec b|}{|\\vec b|}$$</div>
+
+<h2>Parameterfremstilling</h2>
+<p>En linje gennem $P(x_0,y_0)$ med <b>retningsvektor</b> $\\vec r$ kan skrives</p>
+<div class="rule">$$\\begin{pmatrix}x\\\\y\\end{pmatrix}=\\begin{pmatrix}x_0\\\\y_0\\end{pmatrix}+t\\cdot\\vec r,\\qquad t\\in\\mathbb R$$</div>
+<p>Hver værdi af $t$ giver et punkt på linjen, og tværvektoren $\\hat r$ er en normalvektor. En cirkel med centrum $(a,b)$ og radius $r$ har parameterfremstillingen $\\begin{pmatrix}x\\\\y\\end{pmatrix}=\\begin{pmatrix}a\\\\b\\end{pmatrix}+r\\begin{pmatrix}\\cos t\\\\\\sin t\\end{pmatrix}$.</p>
+
+<h2>Vinkel mellem linjer</h2>
+<p>Vinklen mellem to linjer er vinklen mellem deres retningsvektorer (eller normalvektorer). Er den stump, tager man $180^\\circ$ minus den – vinklen mellem to linjer er altid højst $90^\\circ$.</p>
 
 <h2>Determinant og areal</h2>
 <div class="rule">$$\\det(\\vec a,\\vec b)=a_1b_2-a_2b_1$$</div>

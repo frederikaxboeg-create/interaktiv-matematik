@@ -155,6 +155,21 @@ const exercises = [
     },
   },
   {
+    id: 'spredningX',
+    title: 'Spredning af stokastisk variabel',
+    make() {
+      const xs = [0, 1, 2, 3].map((i) => i * pick([1, 2, 5]));
+      const raw = [rint(1, 5), rint(1, 5), rint(1, 5), rint(1, 5)], tot = raw.reduce((a, b) => a + b, 0), ps = raw.map((r) => r / tot);
+      const E = xs.reduce((a, x, i) => a + x * ps[i], 0), V = xs.reduce((a, x, i) => a + (x - E) ** 2 * ps[i], 0);
+      return {
+        prompt: `$X$ har fordelingen $$\\begin{array}{c|cccc} x & ${xs.join(' & ')}\\\\\\hline P(X=x) & ${raw.map((r) => `\\frac{${r}}{${tot}}`).join(' & ')}\\end{array}$$ Bestem spredningen $\\sigma(X)$. Afrund til to decimaler.`,
+        fields: [{ label: '\\sigma', answer: Math.sqrt(V), tol: 0.006 }],
+        hint: 'Find først $\\mu=E(X)$. Så er $\\sigma=\\sqrt{\\sum(x-\\mu)^2\\cdot P(X=x)}$.',
+        solution: `$$\\mu=${tn(E, 4)},\\qquad \\sigma=\\sqrt{${xs.map((x, i) => `(${x}-${tn(E, 2)})^2\\cdot\\frac{${raw[i]}}{${tot}}`).join('+')}}\\approx ${tn(Math.sqrt(V))}$$`,
+      };
+    },
+  },
+  {
     id: 'stokastisk',
     title: 'Middelværdi af stokastisk variabel',
     make() {

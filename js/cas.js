@@ -12,6 +12,8 @@
 //  {t:'eq', a, b}  {t:'range', a, b}  {t:'list', items}  {t:'lambda', param, body}
 //  {t:'assign', name, value}
 
+import { fitLinear, fitExp, fitPower, mean as statMean, median as statMedian, sd as statSd } from './stats.js';
+
 export class MathError extends Error {}
 const fail = (m) => { throw new MathError(m); };
 
@@ -22,7 +24,7 @@ export const FUNCS = {
 };
 const ALIAS = { kvrod: 'sqrt', arcsin: 'asin', arccos: 'acos', arctan: 'atan' };
 const CONSTS = { pi: Math.PI, e: Math.E };
-export const COMMANDS = ['solve', 'fsolve', 'diff', 'int', 'integrate', 'evalf', 'expand', 'simplify', 'factor', 'plot', 'subs'];
+export const COMMANDS = ['solve', 'fsolve', 'diff', 'int', 'integrate', 'evalf', 'expand', 'simplify', 'factor', 'plot', 'subs', 'linreg', 'expreg', 'powreg', 'mean', 'median', 'stdev'];
 
 // ---------- byggeklodser ----------
 export const N = (v, dec = false) => ({ t: 'num', v: Math.abs(v) < 1e-13 ? 0 : v, dec });
@@ -915,6 +917,22 @@ export function run(src, env) {
         if (e.t !== 'eq' || e.a.t !== 'var' || !A[1]) fail('Brug subs(x = 2, udtryk)');
         const r = simplify(subst(A[1], e.a.n, e.b));
         return { input, output: toTex(r) + (r.t !== 'num' && !freeVars(r).size ? `\\approx ${decTex(numeric(r), 8)}` : '') };
+      }
+      case 'linreg': case 'expreg': case 'powreg': {
+        const nums = (L) => { if (!L || L.t !== 'list') fail(`${ast.n} skal have to lister, fx ${ast.n}([1,2,3], [2,4,5])`); return L.items.map((i) => numeric(simplify(i))); };
+        const xs = nums(A[0]), ys = nums(A[1]);
+        if (xs.length !== ys.length || xs.length < 2) fail('Listerne skal være lige lange og have mindst to tal');
+        const m = ast.n === 'linreg' ? fitLinear(xs, ys) : ast.n === 'expreg' ? fitExp(xs, ys) : fitPower(xs, ys);
+        if (!m) fail('Modellen kræver positive tal');
+        const f = (v) => decTex(v, 6);
+        const model = ast.n === 'linreg' ? `y=${f(m.a)}x${m.b < 0 ? '-' : '+'}${f(Math.abs(m.b))}` : ast.n === 'expreg' ? `y=${f(m.b)}\\cdot {${f(m.a)}}^{x}` : `y=${f(m.b)}\\cdot x^{${f(m.a)}}`;
+        return { input, output: `${model},\\qquad r^2=${decTex(m.r2, 6)}` };
+      }
+      case 'mean': case 'median': case 'stdev': {
+        if (e.t !== 'list') fail(`Skriv fx ${ast.n}([3, 5, 8])`);
+        const xs = e.items.map((i) => numeric(simplify(i)));
+        const v = ast.n === 'mean' ? statMean(xs) : ast.n === 'median' ? statMedian(xs) : statSd(xs, A[1] ? numeric(A[1]) === 1 : false);
+        return { input, output: numTex(v) === decTex(v) ? decTex(v, 8) : `${numTex(v)}\\approx ${decTex(v, 8)}` };
       }
       case 'plot': {
         const items = e.t === 'list' ? e.items : [e];

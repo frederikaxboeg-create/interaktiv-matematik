@@ -254,6 +254,22 @@ const exercises = [
     },
   },
   {
+    id: 'ensvinklede',
+    title: 'Ensvinklede trekanter',
+    make() {
+      const k = pick([1.5, 2, 2.5, 3, 0.5]);
+      let a, b, c;
+      do { a = rint(3, 9); b = rint(3, 9); c = rint(3, 9); } while (a >= b + c || b >= a + c || c >= a + b);
+      const ask = pick(['b', 'c']), side = ask === 'b' ? b : c;
+      return {
+        prompt: `Trekanterne $ABC$ og $A_1B_1C_1$ er ensvinklede. I $ABC$ er $a=${a}$, $b=${b}$ og $c=${c}$. I $A_1B_1C_1$ er $a_1=${tn(k * a)}$. Bestem $${ask}_1$.`,
+        fields: [{ label: `${ask}_1`, answer: k * side, tol: 0.006 }],
+        hint: 'I ensvinklede trekanter er forholdet mellem ensliggende sider det samme: skalafaktoren $k=\\dfrac{a_1}{a}$.',
+        solution: `$$k=\\frac{a_1}{a}=\\frac{${tn(k * a)}}{${a}}=${tn(k)},\\qquad ${ask}_1=k\\cdot ${ask}=${tn(k)}\\cdot${side}=${tn(k * side)}$$`,
+      };
+    },
+  },
+  {
     id: 'thales',
     title: 'Gør trekanten retvinklet',
     interactive: true,
@@ -331,6 +347,11 @@ const learn = `
 <div class="rule">$$\\textbf{Sinusrelationen:}\\quad \\frac{a}{\\sin A}=\\frac{b}{\\sin B}=\\frac{c}{\\sin C}$$</div>
 <p>Bruges når man kender en side og den modstående vinkel. Pas på: når man finder en <i>vinkel</i> med sinusrelationen, kan der være to løsninger ($v$ og $180^\\circ-v$).</p>
 <div class="rule">$$\\textbf{Areal:}\\quad T=\\tfrac12\\,a\\,b\\,\\sin C$$</div>
+
+<h2>Ensvinklede trekanter</h2>
+<p>To trekanter er <b>ensvinklede</b>, hvis de har de samme vinkler. Så er siderne proportionale med en <b>skalafaktor</b> $k$:</p>
+<div class="rule">$$\\frac{a_1}{a}=\\frac{b_1}{b}=\\frac{c_1}{c}=k$$</div>
+<p>Arealet ganges med $k^2$.</p>
 
 <h2>Enhedscirklen</h2>
 <p>Enhedscirklen har centrum i $(0,0)$ og radius 1. Drejer man vinklen $v$ fra $x$-aksen, har punktet koordinaterne $(\\cos v\\,;\\,\\sin v)$. Derfor er</p>
