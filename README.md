@@ -1,0 +1,87 @@
+# Interaktiv Matematik
+
+**Live:** https://frederikaxboeg-create.github.io/interaktiv-matematik/
+
+En interaktiv matematik-app til gymnasiet. Den kan bruges som hjemmeside, installeres som app og virker uden internet. Hvert emne har to dele:
+
+- **Udforsk** – træk i punkter og skru på parametre, og se graf og udregninger ændre sig live.
+- **Øv dig** – tilfældigt genererede opgaver med øjeblikkelig feedback, hint, fuld løsning og point.
+
+## Emner
+
+| Emne | Udforsk | Opgavetyper |
+|---|---|---|
+| Lineære funktioner | Træk to punkter, hældningstrekant, skydere for a og b | Hældning fra to punkter, aflæs forskrift, tegn linjen, løs ligning, skæringspunkt |
+| Andengradspolynomier | Skydere for a, b, c, træk i toppunktet, diskriminant og rødder | Diskriminant, antal løsninger, rødder, toppunkt, placér parablen, aflæs fortegn |
+| Eksponentielle funktioner | Træk i b og a, fordoblings-/halveringskonstant, tabel | Procent → a, fremskrivning, T₂/T½, forskrift fra to punkter, match graf |
+| Differentialregning | Tangent, sekant med h → 0, graf for f′, egen funktion | f′(x₀) for polynomier, tangentens ligning, regneregler, vandrette tangenter, find punkt med given hældning |
+
+Plus en **graftegner**, hvor man selv kan skrive op til fire funktioner.
+
+## Installér som app
+
+- **Android/Chrome/Edge:** tryk "Installér" øverst, eller brug browserens menu
+- **iPhone/iPad:** åbn siden i Safari → Del → "Føj til hjemmeskærm"
+- **Mac/PC:** i Chrome eller Edge, klik på installér-ikonet i adresselinjen
+- Efter første besøg virker appen også uden internet
+
+## Udgiv ændringer
+
+Appen ligger på GitHub Pages fra `main`-grenen. For at udgive en ændring:
+
+1. Hæv `CACHE`-versionen i `sw.js` (f.eks. `interaktiv-matematik-v2`), så installerede apps henter de nye filer
+2. Tilføjer du en ny fil, skal den også med i `FILES`-listen i `sw.js`
+3. `git commit -am "Beskrivelse"` og `git push`
+
+Siden er opdateret efter et par minutter.
+
+## Kør appen lokalt
+
+Der er intet build-trin – det er ren HTML, CSS og JavaScript. Start en lokal webserver i mappen:
+
+```bash
+python3 -m http.server 5173
+```
+
+Åbn derefter <http://localhost:5173>.
+
+(Appen bruger ES-moduler, så den skal hentes via en webserver – at dobbeltklikke på `index.html` virker ikke.)
+
+## Struktur
+
+```
+index.html          Skal for appen (topbjælke + <main>)
+css/style.css       Alt design, inkl. mørk tilstand
+js/main.js          Routing (#/emne, #/emne/oev) og forside
+js/graph.js         Interaktivt koordinatsystem på canvas (zoom, panorering, trækbare punkter)
+js/parser.js        Sikker parser til udtryk som "2x^2 - 3x + 1" og "e^(0,5x)"
+js/practice.js      Opgavemotor: tjek af svar, hint, løsning, point
+js/progress.js      Point og fremskridt i localStorage
+js/ui.js, util.js   DOM-hjælpere, KaTeX-formler, talformatering med decimalkomma
+js/topics/*.js      Et modul pr. emne: explore() + en liste af opgavegeneratorer
+js/pwa.js, sw.js    Installérbar app og offline-cache
+manifest.webmanifest, icons/   App-navn, farver og ikoner
+vendor/katex/       KaTeX 0.16.11 (MIT-licens) til formler – ligger lokalt, så det virker offline
+```
+
+### Tilføj en ny opgavetype
+
+Tilføj et objekt til `exercises` i det relevante emne-modul:
+
+```js
+{
+  id: 'min-opgave',
+  title: 'Min opgave',
+  make() {
+    const a = rint(1, 5);
+    return {
+      prompt: `Hvad er $${a}\\cdot 2$?`,
+      fields: [{ label: 'x', answer: a * 2 }],
+      hint: 'Gang med 2.',
+      solution: `$$${a}\\cdot 2 = ${a * 2}$$`,
+    };
+  },
+}
+```
+
+Formler skrives i TeX mellem `$...$` (inline) eller `$$...$$` (centreret) og vises med KaTeX.

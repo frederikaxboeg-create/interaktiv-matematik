@@ -1,0 +1,24 @@
+{
+  "name": "Interaktiv Matematik – funktioner, differentialregning og opgaver",
+  "short_name": "Matematik",
+  "description": "Interaktiv matematik for gymnasiet: udforsk funktioner ved at trække i grafer, og øv dig med opgaver, der giver feedback med det samme.",
+  "lang": "da",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e1117",
+  "theme_color": "#3b5bdb",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Lineære funktioner", "url": "./#/lineaere", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Andengradspolynomier", "url": "./#/andengrads", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Differentialregning", "url": "./#/differential", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Graftegner", "url": "./#/graftegner", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
