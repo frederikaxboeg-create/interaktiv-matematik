@@ -11,7 +11,12 @@ export function setupPwa() {
       if (hadController && !reloaded) { reloaded = true; location.reload(); }
     });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(() => { /* appen virker fint uden */ });
+      navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+        // Tjek for en ny version, når man vender tilbage til appen, og hver halve time.
+        const check = () => reg.update().catch(() => {});
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+        setInterval(check, 30 * 60 * 1000);
+      }).catch(() => { /* appen virker fint uden */ });
     });
   }
 
