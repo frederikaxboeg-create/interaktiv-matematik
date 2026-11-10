@@ -316,6 +316,18 @@ export class Graph {
         break;
       }
       case 'area': this._area(it, col); break;
+      case 'path': {
+        // polylinje gennem punkter [[x, y], ...] – NaN bryder linjen
+        ctx.beginPath();
+        let pen = false;
+        for (const [x, y] of it.points) {
+          if (!Number.isFinite(x) || !Number.isFinite(y)) { pen = false; continue; }
+          const px = this.sx(x), py = Math.max(-this.h, Math.min(2 * this.h, this.sy(y)));
+          if (pen) ctx.lineTo(px, py); else { ctx.moveTo(px, py); pen = true; }
+        }
+        ctx.stroke();
+        break;
+      }
       case 'point': this._point(it, col); break;
       case 'text':
         this._text(it.text, this.sx(it.x) + (it.dx ?? 0), this.sy(it.y) + (it.dy ?? 0), col, it.align ?? 'left', it.font);

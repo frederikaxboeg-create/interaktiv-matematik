@@ -2,7 +2,7 @@
  * Strategi: svar straks fra cachen og hent en frisk version i baggrunden
  * (stale-while-revalidate), så opdateringer slår igennem ved næste åbning.
  * Hæv CACHE-versionen, når du udgiver ændringer. */
-const CACHE = 'interaktiv-matematik-v4';
+const CACHE = 'interaktiv-matematik-v5';
 const FILES = [
   './',
   'index.html',
@@ -19,6 +19,7 @@ const FILES = [
   'js/ui.js',
   'js/util.js',
   'js/topics/derivative.js',
+  'js/topics/diffeq.js',
   'js/topics/equations.js',
   'js/topics/exponential.js',
   'js/topics/help.js',

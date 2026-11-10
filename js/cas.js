@@ -342,6 +342,33 @@ export function toFn(n, v = 'x') {
   }
 }
 const numeric = (n) => toFn(n, '\u0000')(0);
+
+/** Funktion af flere variable, fx toFnVars(ast, ['x', 'y']) → (x, y) => … */
+export function toFnVars(n, names) {
+  const idx = Object.fromEntries(names.map((nm, i) => [nm, i]));
+  const go = (n) => {
+    switch (n.t) {
+      case 'num': { const c = n.v; return () => c; }
+      case 'const': { const c = CONSTS[n.n]; return () => c; }
+      case 'var': { if (!(n.n in idx)) fail(`Ukendt variabel "${n.n}"`); const i = idx[n.n]; return (a) => a[i]; }
+      case 'neg': { const a = go(n.a); return (s) => -a(s); }
+      case 'fn': { const f = FUNCS[n.n], a = go(n.a); return (s) => f(a(s)); }
+      case 'op': {
+        const a = go(n.a), b = go(n.b);
+        switch (n.op) {
+          case '+': return (s) => a(s) + b(s);
+          case '-': return (s) => a(s) - b(s);
+          case '*': return (s) => a(s) * b(s);
+          case '/': return (s) => a(s) / b(s);
+          default: return (s) => Math.pow(a(s), b(s));
+        }
+      }
+      default: return fail('Skriv et udtryk i x og y');
+    }
+  };
+  const f = go(n);
+  return (...args) => f(args);
+}
 const isDec = (n) => (n.t === 'num' ? n.dec : n.t === 'const' ? false : ['op', 'neg', 'fn'].includes(n.t) && (isDec(n.a) || (n.t === 'op' && isDec(n.b))));
 
 // ---------- polynomier ----------

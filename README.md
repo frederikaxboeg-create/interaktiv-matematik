@@ -14,7 +14,7 @@ Appen følger kernestoffet i Matematik A og er delt op i kategorier:
 - **Emner** (ordnet efter kernestoffets områder) – hvert emne har fanerne *Lær* (teori og eksempler), *Udforsk* (træk i grafer og figurer) og *Øv dig* (opgaver):
   - *Tal og algebra:* Procent og rente
   - *Geometri, trigonometri og vektorer:* Trigonometri, Vektorer i planen
-  - *Funktioner og infinitesimalregning:* Lineære, andengrads-, eksponentielle og potensfunktioner, Differentialregning, Integralregning
+  - *Funktioner og infinitesimalregning:* Lineære, andengrads-, eksponentielle og potensfunktioner, Differentialregning, Integralregning, Differentialligninger
   - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen
 - **Interaktive øvelser** – alle opgaver, hvor man løser ved at trække i grafer, punkter og vektorer
 - **Løs ligninger** – otte ligningstyper med trin-for-trin-løsninger, en metodeoversigt og en ligningsløser

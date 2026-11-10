@@ -6,6 +6,7 @@ import power from './power.js';
 import percent from './percent.js';
 import derivative from './derivative.js';
 import integral from './integral.js';
+import diffeq from './diffeq.js';
 import trig from './trig.js';
 import vectors from './vectors.js';
 import probability from './probability.js';
@@ -32,10 +33,10 @@ export const AREAS = [
   {
     id: 'funktioner',
     title: 'Funktioner og infinitesimalregning',
-    desc: 'Funktionstyperne, differentialregning og integralregning.',
-    topics: [linear, quadratic, exponential, power, derivative, integral],
+    desc: 'Funktionstyperne, differential- og integralregning og differentialligninger.',
+    topics: [linear, quadratic, exponential, power, derivative, integral, diffeq],
     status: { lineaere: 'done', andengrads: 'done', eksponentielle: 'done', potens: 'done', differential: 'now', integral: 'next' },
-    planned: ['Differentialligninger', 'Regression og modellering'],
+    planned: ['Regression og modellering'],
   },
   {
     id: 'sandsynlighed',
