@@ -146,6 +146,7 @@ const exercises = [
   {
     id: 'draw',
     title: 'Tegn linjen',
+    interactive: true,
     make() {
       const a = pick([-2, -1, -0.5, 0.5, 1, 2]), b = rint(-3, 3);
       const onLine = (p) => near(p.y, a * p.x + b);
@@ -205,8 +206,37 @@ const exercises = [
   },
 ];
 
+const learn = `
+<h2>Lineære funktioner</h2>
+<p>En lineær funktion har forskriften</p>
+<div class="rule">$$f(x)=ax+b$$</div>
+<p>Grafen er en <b>ret linje</b>. Tallet $a$ er <b>hældningen</b>, og $b$ er <b>skæringen med $y$-aksen</b>, dvs. grafen går gennem $(0\\,;\\,b)$.</p>
+
+<h2>Hældningen $a$</h2>
+<p>Når $x$ vokser med 1, ændres $y$ med $a$. Kender man to punkter $(x_1,y_1)$ og $(x_2,y_2)$ på linjen:</p>
+<div class="rule">$$a=\\frac{y_2-y_1}{x_2-x_1}\\qquad b=y_1-a\\cdot x_1$$</div>
+<div class="example">Linjen gennem $(1,3)$ og $(4,9)$: $$a=\\frac{9-3}{4-1}=2,\\qquad b=3-2\\cdot1=1,\\qquad f(x)=2x+1$$</div>
+<ul>
+  <li>$a>0$: voksende, $a<0$: aftagende, $a=0$: vandret linje.</li>
+  <li>To linjer er <b>parallelle</b>, hvis de har samme hældning.</li>
+  <li>To linjer er <b>ortogonale</b> (vinkelrette), hvis $a_1\\cdot a_2=-1$.</li>
+</ul>
+
+<h2>Nulpunkt</h2>
+<p>Grafen skærer $x$-aksen, hvor $f(x)=0$:</p>
+<div class="rule">$$ax+b=0\\quad\\Leftrightarrow\\quad x=-\\frac{b}{a}$$</div>
+
+<h2>Skæring mellem to linjer</h2>
+<p>Sæt forskrifterne lig hinanden og løs ligningen. Indsæt $x$ i en af forskrifterne for at finde $y$.</p>
+<div class="example">$f(x)=2x+1$ og $g(x)=-x+7$: $$2x+1=-x+7\\Leftrightarrow 3x=6\\Leftrightarrow x=2,\\qquad y=f(2)=5$$ Skæringspunktet er $(2,5)$.</div>
+
+<h2>Linjens ligning gennem et punkt</h2>
+<div class="rule">$$y=a(x-x_0)+y_0$$</div>
+<p>er linjen med hældning $a$ gennem punktet $(x_0,y_0)$.</p>`;
+
 export default {
   id: 'lineaere',
+  learn,
   title: 'Lineære funktioner',
   short: 'Lineære',
   formula: 'f(x)=ax+b',

@@ -7,16 +7,20 @@ En interaktiv matematik-app til gymnasiet. Den kan bruges som hjemmeside, instal
 - **Udforsk** – træk i punkter og skru på parametre, og se graf og udregninger ændre sig live.
 - **Øv dig** – tilfældigt genererede opgaver med øjeblikkelig feedback, hint, fuld løsning og point.
 
-## Emner
+## Indhold
 
-| Emne | Udforsk | Opgavetyper |
-|---|---|---|
-| Lineære funktioner | Træk to punkter, hældningstrekant, skydere for a og b | Hældning fra to punkter, aflæs forskrift, tegn linjen, løs ligning, skæringspunkt |
-| Andengradspolynomier | Skydere for a, b, c, træk i toppunktet, diskriminant og rødder | Diskriminant, antal løsninger, rødder, toppunkt, placér parablen, aflæs fortegn |
-| Eksponentielle funktioner | Træk i b og a, fordoblings-/halveringskonstant, tabel | Procent → a, fremskrivning, T₂/T½, forskrift fra to punkter, match graf |
-| Differentialregning | Tangent, sekant med h → 0, graf for f′, egen funktion | f′(x₀) for polynomier, tangentens ligning, regneregler, vandrette tangenter, find punkt med given hældning |
+Appen følger kernestoffet i Matematik A og er delt op i kategorier:
 
-Plus en **graftegner**, hvor man selv kan skrive op til fire funktioner.
+- **Emner** (ordnet efter kernestoffets områder) – hvert emne har fanerne *Lær* (teori og eksempler), *Udforsk* (træk i grafer og figurer) og *Øv dig* (opgaver):
+  - *Tal og algebra:* Procent og rente
+  - *Geometri, trigonometri og vektorer:* Trigonometri, Vektorer i planen
+  - *Funktioner og infinitesimalregning:* Lineære, andengrads-, eksponentielle og potensfunktioner, Differentialregning, Integralregning
+  - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen
+- **Interaktive øvelser** – alle opgaver, hvor man løser ved at trække i grafer, punkter og vektorer
+- **Løs ligninger** – otte ligningstyper med trin-for-trin-løsninger, en metodeoversigt og en ligningsløser
+- **Graftegner**
+
+Emner fra kernestoffet, der endnu ikke er lavet, står som "Kommer senere" på forsiden.
 
 ## Installér som app
 

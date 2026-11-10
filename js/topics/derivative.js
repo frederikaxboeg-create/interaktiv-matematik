@@ -1,6 +1,6 @@
 import { Graph } from '../graph.js';
 import { el, math, tex, slider, toggle, exploreLayout, card, hint, escapeHtml } from '../ui.js';
-import { rint, pick, shuffle, tn, pt, eq, polyTex, linTex, round, num, plus } from '../util.js';
+import { rint, pick, shuffle, tn, pt, eq, polyTex, linTex, round, num, plus, near } from '../util.js';
 import { tryCompile } from '../parser.js';
 
 /** Numerisk differentialkvotient (central differens). */
@@ -162,6 +162,11 @@ const RULES = [
   () => ({ f: '\\cos(x)', right: '-\\sin(x)', wrong: ['\\sin(x)', '-\\cos(x)', '\\cos(x)'], why: "$(\\cos x)'=-\\sin x$. Husk minusset!" }),
   () => ({ f: '\\sqrt{x}', right: '\\frac{1}{2\\sqrt{x}}', wrong: ['2\\sqrt{x}', '\\frac{1}{\\sqrt{x}}', '\\frac{2}{3}x^{3/2}'], why: "$\\sqrt x=x^{1/2}$, så $(\\sqrt x)'=\\frac12 x^{-1/2}=\\dfrac{1}{2\\sqrt x}$." }),
   () => ({ f: '\\frac{1}{x}', right: '-\\frac{1}{x^2}', wrong: ['\\frac{1}{x^2}', '\\ln(x)', '-\\frac{1}{x}'], why: "$\\frac1x=x^{-1}$, så $(x^{-1})'=-1\\cdot x^{-2}=-\\dfrac{1}{x^2}$." }),
+  () => ({ f: 'x\\cdot e^{x}', right: '(x+1)\\,e^{x}', wrong: ['e^{x}', 'x\\cdot e^{x-1}', '1\\cdot e^{x}+x'], why: "Produktreglen: $(f\\cdot g)'=f'g+fg'$, så $(x\\cdot e^x)'=1\\cdot e^x+x\\cdot e^x=(x+1)e^x$." }),
+  () => ({ f: 'x^2\\ln(x)', right: '2x\\ln(x)+x', wrong: ['\\frac{2x}{x}', '2x\\ln(x)', '\\frac{x^2}{x}'], why: "Produktreglen: $(x^2\\ln x)'=2x\\ln x+x^2\\cdot\\frac1x=2x\\ln x+x$." }),
+  () => { const k = rint(2, 4); return { f: `(${k}x+1)^3`, right: `${3 * k}(${k}x+1)^2`, wrong: [`3(${k}x+1)^2`, `(${k}x+1)^2`, `${k}(${k}x+1)^3`], why: `Kædereglen: $(f(g(x)))'=f'(g(x))\\cdot g'(x)$, så $((${k}x+1)^3)'=3(${k}x+1)^2\\cdot${k}=${3 * k}(${k}x+1)^2$.` }; },
+  () => ({ f: 'e^{x^2}', right: '2x\\,e^{x^2}', wrong: ['e^{x^2}', 'x^2e^{x^2-1}', '2e^{x^2}'], why: "Kædereglen: ydre funktion $e^u$, indre $u=x^2$ med $u'=2x$. Så $(e^{x^2})'=e^{x^2}\\cdot2x$." }),
+  () => ({ f: '\\ln(x^2+1)', right: '\\frac{2x}{x^2+1}', wrong: ['\\frac{1}{x^2+1}', '\\frac{1}{2x}', '2x\\ln(x^2+1)'], why: "Kædereglen: $(\\ln u)'=\\frac{u'}{u}$, så $(\\ln(x^2+1))'=\\dfrac{2x}{x^2+1}$." }),
   () => { const a = rint(2, 5); return { f: `${a}^{x}`, right: `${a}^{x}\\cdot\\ln(${a})`, wrong: [`x\\cdot ${a}^{x-1}`, `${a}^{x}`, `\\frac{${a}^{x}}{\\ln(${a})}`], why: `$(a^x)'=a^x\\cdot\\ln(a)$. Bemærk: potensreglen gælder ikke, når $x$ står i eksponenten.` }; },
 ];
 
@@ -237,8 +242,38 @@ const exercises = [
     },
   },
   {
+    id: 'drawtangent',
+    title: 'Tegn tangenten',
+    interactive: true,
+    make() {
+      const a = pick([0.5, -0.5, 1, -1]), b = rint(-2, 2), c = rint(-2, 2), x0 = rint(-2, 2);
+      const f = (x) => a * x * x + b * x + c;
+      const y0 = f(x0), m = 2 * a * x0 + b;
+      const st = { y: y0 + (m === 0 ? 2 : 0) };
+      return {
+        prompt: `Træk punktet $Q$ op eller ned, så linjen gennem $P$ og $Q$ bliver <b>tangent</b> til grafen for $f(x)=${polyTex([a, b, c])}$ i $P$.`,
+        graph: {
+          view: { xmin: x0 - 5, xmax: x0 + 5, ymin: y0 - 4, ymax: y0 + 4 },
+          state: st,
+          scene: (s, rev) => [
+            { type: 'fn', f, color: '--c1', width: 3 },
+            rev && { type: 'line', x1: x0, y1: y0, x2: x0 + 1, y2: y0 + m, color: '--c3', width: 2, dash: true },
+            { type: 'line', x1: x0, y1: y0, x2: x0 + 1, y2: s.y, color: '--c2', width: 2.5 },
+            { type: 'vline', x: x0 + 1, color: '--g-grid', width: 1, dash: [3, 4] },
+            { type: 'point', x: x0, y: y0, color: '--c1', label: 'P' },
+            { type: 'point', x: x0 + 1, y: s.y, color: '--c2', label: 'Q', snap: 0.5, drag: (x, y) => { s.y = y; } },
+          ],
+        },
+        check: (s) => near(s.y, y0 + m),
+        hint: `$Q$ ligger 1 til højre for $P$, så $Q$ skal ligge $f'(${x0})$ højere end $P$. Find $f'(x)$ først.`,
+        solution: `$$f'(x)=${polyTex([2 * a, b])},\\qquad f'(${x0})=${tn(m)}$$ Tangenten stiger $${tn(m)}$ for hvert skridt til højre, så $Q$ skal ligge i $${pt(x0 + 1, y0 + m)}$.`,
+      };
+    },
+  },
+  {
     id: 'findslope',
     title: 'Find punktet med en given hældning',
+    interactive: true,
     make() {
       const a = pick([0.5, -0.5]), b = rint(-2, 2), c = rint(-2, 2), x0 = rint(-3, 3);
       const f = (x) => a * x * x + b * x + c;
@@ -267,8 +302,46 @@ const exercises = [
   },
 ];
 
+const learn = `
+<h2>Differentialkvotient</h2>
+<p>Differentialkvotienten $f'(x_0)$ er <b>hældningen af tangenten</b> til grafen i punktet $(x_0\\,;\\,f(x_0))$ – eller funktionens <b>væksthastighed</b> i $x_0$. Den defineres som grænseværdien af sekanthældningen:</p>
+<div class="rule">$$f'(x_0)=\\lim_{h\\to0}\\frac{f(x_0+h)-f(x_0)}{h}$$</div>
+<p>Grænseværdien skal eksistere – og $f$ skal være <b>kontinuert</b> i $x_0$ – før funktionen kan differentieres der.</p>
+
+<h2>Regneregler</h2>
+<table class="vt"><thead><tr><th>$f(x)$</th><th>$f'(x)$</th></tr></thead><tbody>
+<tr><td>$k$</td><td>$0$</td></tr>
+<tr><td>$x^n$</td><td>$n\\cdot x^{n-1}$</td></tr>
+<tr><td>$e^{kx}$</td><td>$k\\cdot e^{kx}$</td></tr>
+<tr><td>$a^x$</td><td>$a^x\\cdot\\ln a$</td></tr>
+<tr><td>$\\ln x$</td><td>$\\frac1x$</td></tr>
+<tr><td>$\\sqrt x$</td><td>$\\frac{1}{2\\sqrt x}$</td></tr>
+<tr><td>$\\sin x$</td><td>$\\cos x$</td></tr>
+<tr><td>$\\cos x$</td><td>$-\\sin x$</td></tr>
+</tbody></table>
+<div class="rule">$$(f\\pm g)'=f'\\pm g'\\qquad (k\\cdot f)'=k\\cdot f'$$
+$$\\textbf{Produktreglen:}\\;(f\\cdot g)'=f'\\cdot g+f\\cdot g'\\qquad \\textbf{Kædereglen:}\\;\\big(f(g(x))\\big)'=f'(g(x))\\cdot g'(x)$$</div>
+<div class="example">$$\\big((3x+1)^4\\big)'=4(3x+1)^3\\cdot3=12(3x+1)^3$$</div>
+
+<h2>Tangentens ligning</h2>
+<div class="rule">$$y=f'(x_0)\\,(x-x_0)+f(x_0)$$</div>
+<div class="example">$f(x)=x^2$ i $x_0=3$: $f(3)=9$, $f'(x)=2x$, $f'(3)=6$. Tangenten er $y=6(x-3)+9=6x-9$.</div>
+
+<h2>Monotoni og ekstrema</h2>
+<ul>
+  <li>$f'(x)>0$ på et interval: $f$ er <b>voksende</b> der.</li>
+  <li>$f'(x)<0$: $f$ er <b>aftagende</b>.</li>
+  <li>$f'(x)=0$: vandret tangent – et muligt <b>lokalt maksimum eller minimum</b>.</li>
+</ul>
+<p>Fremgangsmåde: løs $f'(x)=0$, lav en <b>fortegnslinje</b> for $f'$, og aflæs monotoniforhold og ekstrema. Ved <b>optimering</b> finder man det $x$, der giver den største eller mindste værdi.</p>
+
+<h2>Newtons metode</h2>
+<p>Nulpunkter kan findes numerisk ved gentagne gange at følge tangenten ned til $x$-aksen:</p>
+<div class="rule">$$x_{n+1}=x_n-\\frac{f(x_n)}{f'(x_n)}$$</div>`;
+
 export default {
   id: 'differential',
+  learn,
   title: 'Differentialregning',
   short: 'Differential',
   formula: "f'(x_0)",

@@ -1,6 +1,6 @@
 import { Graph } from '../graph.js';
 import { el, math, slider, toggle, exploreLayout, card, hint } from '../ui.js';
-import { rint, pick, shuffle, tn, pt, eq, round, num, clamp } from '../util.js';
+import { rint, pick, shuffle, tn, pt, eq, round, num, clamp, near } from '../util.js';
 
 const expTex = (b, a) => `${tn(b, 4)}\\cdot {${tn(a, 4)}}^{x}`;
 
@@ -145,6 +145,33 @@ const exercises = [
     },
   },
   {
+    id: 'dragexp',
+    title: 'Træk grafen på plads',
+    interactive: true,
+    make() {
+      let b, a;
+      do { b = pick([1, 1.5, 2, 3, 4, 5]); a = pick([0.5, 1.5, 2, 3]); } while (b * a > 10 || b * a < 0.5);
+      const st = { B: 1, A: 1 };
+      return {
+        prompt: `Træk i de to punkter, så grafen bliver grafen for $f(x)=${expTex(b, a)}$.`,
+        graph: {
+          view: { xmin: -3, xmax: 5, ymin: -1, ymax: 11, equalAspect: false },
+          state: st,
+          scene: (s, rev) => [
+            rev && { type: 'fn', f: (x) => b * a ** x, color: '--c3', width: 2.5, dash: true },
+            { type: 'fn', f: (x) => s.B * s.A ** x, color: '--c1', width: 3 },
+            { type: 'vline', x: 1, color: '--g-grid', width: 1, dash: [3, 4] },
+            { type: 'point', x: 0, y: s.B, color: '--c2', label: 'x = 0', ldx: -12, lalign: 'right', drag: (x, y) => { const B = clamp(Math.round(y * 2) / 2, 0.5, 10); s.A = (s.B * s.A) / B; s.B = B; } },
+            { type: 'point', x: 1, y: s.B * s.A, color: '--c3', label: 'x = 1', drag: (x, y) => { s.A = clamp(Math.round(y * 2) / 2, 0.5, 10.5) / s.B; } },
+          ],
+        },
+        check: (s) => near(s.B, b) && near(s.B * s.A, b * a),
+        hint: 'Grafen skal gå gennem $(0\\,;\\,b)$ og $(1\\,;\\,b\\cdot a)$.',
+        solution: `$f(0)=${tn(b)}$ og $f(1)=${tn(b)}\\cdot${tn(a)}=${tn(b * a)}$. Punkterne skal altså ligge i $${pt(0, b)}$ og $${pt(1, b * a)}$.`,
+      };
+    },
+  },
+  {
     id: 'match',
     title: 'Hvilken forskrift passer?',
     make() {
@@ -171,8 +198,31 @@ const exercises = [
   },
 ];
 
+const learn = `
+<h2>Eksponentielle funktioner</h2>
+<div class="rule">$$f(x)=b\\cdot a^x,\\qquad a>0,\\; b>0$$</div>
+<ul>
+  <li>$b$ er <b>begyndelsesværdien</b>: grafen skærer $y$-aksen i $(0\\,;\\,b)$.</li>
+  <li>$a$ er <b>fremskrivningsfaktoren</b>: når $x$ vokser med 1, <i>ganges</i> $y$ med $a$.</li>
+  <li>$a=1+r$, hvor $r$ er <b>vækstraten</b>. $a>1$: voksende, $0<a<1$: aftagende.</li>
+</ul>
+<div class="example">En bakteriekultur på 200 vokser med $8\\,\\%$ i timen: $f(x)=200\\cdot1{,}08^x$.</div>
+
+<h2>Fordoblings- og halveringskonstant</h2>
+<p>Ved eksponentiel vækst fordobles funktionsværdien hver gang $x$ vokser med $T_2$ – uanset hvor man starter:</p>
+<div class="rule">$$T_2=\\frac{\\ln 2}{\\ln a}\\qquad T_{\\frac12}=\\frac{\\ln\\frac12}{\\ln a}$$</div>
+
+<h2>Forskrift ud fra to punkter</h2>
+<div class="rule">$$a=\\sqrt[x_2-x_1]{\\frac{y_2}{y_1}}\\qquad b=\\frac{y_1}{a^{x_1}}$$</div>
+<div class="example">Gennem $(1,6)$ og $(3,24)$: $$a=\\sqrt{\\tfrac{24}{6}}=2,\\qquad b=\\frac{6}{2^1}=3,\\qquad f(x)=3\\cdot2^x$$</div>
+
+<h2>Eksponentialfunktionen $e^x$ og logaritmer</h2>
+<p>Ofte skrives væksten med grundtallet $e\\approx2{,}718$: $f(x)=b\\cdot e^{kx}$, hvor $a=e^k$, dvs. $k=\\ln a$. Logaritmerne $\\ln$ og $\\log$ er de omvendte funktioner til $e^x$ og $10^x$:</p>
+<div class="rule">$$\\ln(a\\cdot b)=\\ln a+\\ln b\\qquad \\ln\\left(\\frac ab\\right)=\\ln a-\\ln b\\qquad \\ln(a^x)=x\\cdot\\ln a$$</div>`;
+
 export default {
   id: 'eksponentielle',
+  learn,
   title: 'Eksponentielle funktioner',
   short: 'Eksponentielle',
   formula: 'f(x)=b\\cdot a^x',

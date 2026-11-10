@@ -167,6 +167,7 @@ const exercises = [
   {
     id: 'dragvertex',
     title: 'Placér parablen',
+    interactive: true,
     make() {
       const { a, b, c, h, k } = vertexPoly();
       let st;
@@ -185,6 +186,40 @@ const exercises = [
         check: (s) => near(s.h, h) && near(s.k, k),
         hint: 'Find toppunktet med $x_T=\\dfrac{-b}{2a}$ og $y_T=f(x_T)$.',
         solution: `$$x_T=\\frac{-b}{2a}=\\frac{${tn(-b)}}{${tn(2 * a)}}=${tn(h)},\\qquad y_T=f(${tn(h)})=${tn(k)}$$ Toppunktet skal derfor ligge i $${pt(h, k)}$.`,
+      };
+    },
+  },
+  {
+    id: 'dragroots',
+    title: 'Træk nulpunkterne',
+    interactive: true,
+    make() {
+      let a, r1, r2;
+      do {
+        a = pick([1, -1, 0.5, -0.5, 2]);
+        r1 = rint(-5, 4); r2 = rint(r1 + 1, 5);
+      } while (Math.abs(a * ((r2 - r1) / 2) ** 2) > 6);
+      const b = -a * (r1 + r2), c = a * r1 * r2;
+      const st = { p: -1, q: 1 };
+      if (st.p === r1 && st.q === r2) st.q = 2;
+      return {
+        prompt: `Træk de to punkter på $x$-aksen, så parablen bliver grafen for $f(x)=${polyTex([a, b, c])}$.`,
+        graph: {
+          view: { xmin: -7, xmax: 7, ymin: -6.5, ymax: 6.5 },
+          state: st,
+          scene: (s, rev) => [
+            rev && { type: 'fn', f: (x) => a * (x - r1) * (x - r2), color: '--c3', width: 2.5, dash: true },
+            { type: 'fn', f: (x) => a * (x - s.p) * (x - s.q), color: '--c1', width: 3 },
+            { type: 'point', x: s.p, y: 0, color: '--c2', snap: 0.5, drag: (x) => { s.p = x; } },
+            { type: 'point', x: s.q, y: 0, color: '--c2', snap: 0.5, drag: (x) => { s.q = x; } },
+          ],
+        },
+        check: (s) => {
+          const [u, v] = [s.p, s.q].sort((m, n) => m - n);
+          return near(u, r1) && near(v, r2);
+        },
+        hint: 'Nulpunkterne er løsningerne til $f(x)=0$. Brug diskriminanten – eller faktorisér.',
+        solution: `$$${polyTex([a, b, c])}=${a === 1 ? '' : a === -1 ? '-' : tn(a)}(${polyTex([1, -r1])})(${polyTex([1, -r2])})$$ Nulpunkterne er $x=${r1}$ og $x=${r2}$.`,
       };
     },
   },
@@ -217,8 +252,35 @@ const exercises = [
   },
 ];
 
+const learn = `
+<h2>Andengradspolynomier</h2>
+<div class="rule">$$f(x)=ax^2+bx+c,\\qquad a\\ne0$$</div>
+<p>Grafen er en <b>parabel</b>.</p>
+<ul>
+  <li>$a>0$: grenene vender <b>opad</b> (glad mund). $a<0$: grenene vender <b>nedad</b>.</li>
+  <li>Jo større $|a|$, jo smallere parabel.</li>
+  <li>$c$ er skæringen med $y$-aksen: grafen går gennem $(0\\,;\\,c)$.</li>
+  <li>$b$ er hældningen for tangenten i skæringspunktet med $y$-aksen.</li>
+</ul>
+
+<h2>Diskriminant og nulpunkter</h2>
+<div class="rule">$$d=b^2-4ac\\qquad x=\\frac{-b\\pm\\sqrt{d}}{2a}$$</div>
+<table class="vt"><thead><tr><th>Diskriminant</th><th>Antal nulpunkter</th></tr></thead><tbody>
+<tr><td>$d>0$</td><td>to</td></tr><tr><td>$d=0$</td><td>ét (toppunktet ligger på $x$-aksen)</td></tr><tr><td>$d<0$</td><td>ingen</td></tr>
+</tbody></table>
+<div class="example">$x^2-2x-3=0$: $$d=(-2)^2-4\\cdot1\\cdot(-3)=16,\\qquad x=\\frac{2\\pm4}{2}\\;\\Rightarrow\\; x=-1\\;\\vee\\;x=3$$</div>
+
+<h2>Toppunkt</h2>
+<div class="rule">$$T=\\left(\\frac{-b}{2a}\\,;\\,\\frac{-d}{4a}\\right)$$</div>
+<p>Toppunktet ligger på <b>symmetriaksen</b> $x=\\frac{-b}{2a}$, midt mellem nulpunkterne. $y$-koordinaten kan også findes som $f\\left(\\frac{-b}{2a}\\right)$.</p>
+
+<h2>Faktorisering og toppunktsform</h2>
+<div class="rule">$$f(x)=a(x-x_1)(x-x_2)\\qquad f(x)=a(x-h)^2+k$$</div>
+<p>Den første form viser nulpunkterne $x_1$ og $x_2$, den anden viser toppunktet $(h,k)$ direkte.</p>`;
+
 export default {
   id: 'andengrads',
+  learn,
   title: 'Andengradspolynomier',
   short: 'Andengrads',
   formula: 'f(x)=ax^2+bx+c',

@@ -54,7 +54,7 @@ export function mountPractice(root, topic) {
     if (pool.length > 1 && t.id === lastId) t = pick(pool.filter((x) => x.id !== lastId));
     lastId = t.id;
     ex = t.make();
-    ex.typeTitle = t.title;
+    ex.typeTitle = t.label ?? t.title;
     attempts = 0;
     revealed = false;
     done = false;

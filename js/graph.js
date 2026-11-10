@@ -7,6 +7,8 @@
 //   { type: 'vline', x } / { type: 'hline', y }
 //   { type: 'text', x, y, text, dx, dy, align }
 //   { type: 'polygon', points: [[x, y], ...], color, alpha }
+//   { type: 'circle', x, y, r, fill } / { type: 'arc', x, y, r(px), a0, a1, label }
+//   { type: 'area', f, a, b, color, colorNeg }  (areal mellem graf og x-akse)
 // Farver kan være CSS-variabler som '--c1'.
 import { num } from './util.js';
 
@@ -284,8 +286,36 @@ export class Graph {
         it.points.forEach(([x, y], i) => (i ? ctx.lineTo(this.sx(x), this.sy(y)) : ctx.moveTo(this.sx(x), this.sy(y))));
         ctx.closePath();
         ctx.fill();
+        if (it.stroke) { ctx.globalAlpha = 1; ctx.stroke(); }
         break;
       }
+      case 'circle': {
+        const r = Math.abs(this.sx(it.x + it.r) - this.sx(it.x));
+        ctx.beginPath(); ctx.arc(this.sx(it.x), this.sy(it.y), r, 0, Math.PI * 2);
+        if (it.fill) { ctx.globalAlpha = it.alpha ?? 0.12; ctx.fill(); ctx.globalAlpha = 1; }
+        ctx.stroke();
+        break;
+      }
+      case 'arc': {
+        // vinkelbue omkring (x, y) fra vinkel a0 til a1 (radianer, mod uret), radius i pixels
+        const px = this.sx(it.x), py = this.sy(it.y), r = it.r ?? 22;
+        ctx.beginPath();
+        if (it.fill !== false) {
+          ctx.moveTo(px, py);
+          ctx.arc(px, py, r, -it.a0, -it.a1, true);
+          ctx.closePath();
+          ctx.globalAlpha = 0.18; ctx.fill(); ctx.globalAlpha = 1;
+          ctx.beginPath();
+        }
+        ctx.arc(px, py, r, -it.a0, -it.a1, true);
+        ctx.stroke();
+        if (it.label) {
+          const m = (it.a0 + it.a1) / 2, d = r + 13;
+          this._text(it.label, px + Math.cos(m) * d, py - Math.sin(m) * d, col, 'center');
+        }
+        break;
+      }
+      case 'area': this._area(it, col); break;
       case 'point': this._point(it, col); break;
       case 'text':
         this._text(it.text, this.sx(it.x) + (it.dx ?? 0), this.sy(it.y) + (it.dy ?? 0), col, it.align ?? 'left', it.font);
@@ -314,6 +344,31 @@ export class Graph {
       prev = py;
     }
     ctx.stroke();
+  }
+
+  /** Skraveret areal mellem grafen for f og x-aksen fra a til b (positivt og negativt hver for sig). */
+  _area(it, col) {
+    const { ctx } = this;
+    const a = Math.max(Math.min(it.a, it.b), this.view.xmin), b = Math.min(Math.max(it.a, it.b), this.view.xmax);
+    if (!(b > a)) return;
+    const n = Math.max(2, Math.ceil(this.sx(b) - this.sx(a)));
+    for (const [sign, color] of [[1, col], [-1, this.color(it.colorNeg ?? it.color)]]) {
+      ctx.beginPath();
+      ctx.moveTo(this.sx(a), this.sy(0));
+      for (let i = 0; i <= n; i++) {
+        const x = a + ((b - a) * i) / n;
+        let y = it.f(x);
+        if (!Number.isFinite(y)) y = 0;
+        y = sign > 0 ? Math.max(0, y) : Math.min(0, y);
+        ctx.lineTo(this.sx(x), Math.max(-this.h, Math.min(2 * this.h, this.sy(y))));
+      }
+      ctx.lineTo(this.sx(b), this.sy(0));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = it.alpha ?? 0.25;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
 
   _segment(it, col) {
