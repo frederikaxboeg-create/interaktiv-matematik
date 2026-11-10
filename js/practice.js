@@ -13,6 +13,7 @@ import { pick } from './util.js';
 import { Graph } from './graph.js';
 import { evalNumber } from './parser.js';
 import * as progress from './progress.js';
+import { attachPreview } from './mathinput.js';
 
 const PRAISE = ['Flot!', 'Sådan!', 'Godt regnet!', 'Stærkt!', 'Præcis!', 'Det sidder!'];
 
@@ -98,7 +99,7 @@ export function mountPractice(root, topic) {
         form.append(el('label', { class: 'field' },
           el('span', { class: 'field-label', html: tex(f.label) }),
           el('span', { class: 'field-eq' }, '='),
-          inp));
+          el('span', { class: 'field-input' }, inp, attachPreview(inp, { when: 'nontrivial' }))));
       }
       card.append(form);
     }

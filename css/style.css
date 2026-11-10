@@ -215,6 +215,65 @@ main { max-width: 1240px; margin: 0 auto; padding: 28px 24px 64px; }
 .step { margin: 12px 0 0; color: var(--muted); }
 .step + .katex-display { margin-top: 4px; }
 
+/* live formelvisning og matematiktastatur */
+.math-preview { min-height: 0; color: var(--accent); font-size: 15px; overflow-x: auto; }
+.math-preview.on { padding: 4px 2px 0; }
+.fn-row .math-preview { grid-column: 2; }
+.field-input { display: flex; flex-direction: column; gap: 2px; }
+.field .math-preview { font-size: 16px; }
+.math-keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.mkey {
+  min-width: 44px; padding: 7px 10px; border-radius: 9px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font: 500 15px var(--font); box-shadow: var(--shadow);
+}
+.mkey:hover { border-color: var(--accent); color: var(--accent); }
+.mkey:active { transform: translateY(1px); }
+
+/* CAS-regneark */
+.cas-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+@media (max-width: 960px) { .cas-layout { grid-template-columns: 1fr; } }
+.cas-sheet { padding: 10px 0; min-height: 420px; }
+.cas-line { display: grid; grid-template-columns: 34px minmax(0, 1fr); padding: 8px 20px 8px 6px; border-bottom: 1px solid var(--border); }
+.cas-line:last-child { border-bottom: 0; }
+.cas-prompt { color: var(--c2); font: 700 16px ui-monospace, SFMono-Regular, Menlo, monospace; padding-top: 9px; text-align: center; }
+.cas-input input {
+  width: 100%; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: var(--text); font: 16px ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.cas-input input:hover { background: var(--bg); }
+.cas-input input:focus { outline: 0; border-color: var(--accent); background: var(--bg); }
+.cas-preview { color: var(--muted); font-size: 15px; padding: 2px 10px 0; overflow-x: auto; }
+.cas-out { grid-column: 2; color: var(--accent); overflow-x: auto; }
+.cas-out .katex-display { margin: 6px 0 4px; }
+.cas-err { color: var(--bad); font-size: 14px; padding: 6px 10px 0; }
+.cas-note { color: var(--muted); font-size: 14px; text-align: center; }
+.cas-plot { margin: 8px 0 4px; }
+.cas-plot .graph { box-shadow: none; }
+.cas-legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: 14px; color: var(--text); }
+.cas-legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.cas-examples { display: flex; flex-direction: column; gap: 6px; }
+.cas-ex {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; text-align: left;
+  padding: 8px 12px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); font: 14px var(--font);
+}
+.cas-ex:hover { border-color: var(--accent); }
+.cas-ex code { background: none; color: var(--accent); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* hjælp */
+.learn h3 { font-size: 18px; margin: 22px 0 6px; }
+.help-table { width: 100%; }
+.help-table td { vertical-align: middle; }
+.help-table td:first-child { color: var(--muted); }
+.help-table code { white-space: nowrap; }
+.help-try { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 4px; }
+.help-try input {
+  width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font: 17px ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.help-try .math-preview { font-size: 20px; }
+
 /* ligningsløser */
 .interval { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
 .interval input {

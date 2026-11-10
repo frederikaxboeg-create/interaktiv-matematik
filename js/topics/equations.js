@@ -4,6 +4,10 @@ import { Graph } from '../graph.js';
 import { el, tex, exploreLayout, card } from '../ui.js';
 import { rint, rintNZ, pick, tn, par, eq, polyTex, linTex, num, round } from '../util.js';
 import { tryCompile } from '../parser.js';
+import { solveNumeric } from '../cas.js';
+import { attachPreview, mathKeyboard } from '../mathinput.js';
+
+export { solveNumeric };
 
 /** Trin i en løsning: [{ text, tex }] → HTML. */
 const steps = (list) => list.map((s) => `${s.text ? `<p class="step">${s.text}</p>` : ''}${s.tex ? `$$${s.tex}$$` : ''}`).join('');
@@ -281,45 +285,6 @@ const exercises = [
 
 // ---------- ligningsløser ----------
 
-/** Finder løsninger til L(x)=R(x) numerisk i [a; b]. */
-export function solveNumeric(L, R, a, b, n = 6000) {
-  const h = (x) => L(x) - R(x);
-  const roots = [];
-  const add = (x) => {
-    const scale = Math.max(1, Math.abs(L(x)), Math.abs(R(x)));
-    if (!Number.isFinite(x) || Math.abs(h(x)) > 1e-6 * scale) return;
-    if (!roots.some((r) => Math.abs(r - x) < 1e-6 * Math.max(1, Math.abs(x)))) roots.push(x);
-  };
-  const dx = (b - a) / n;
-  let x0 = a, y0 = h(a), ym = NaN;
-  for (let i = 1; i <= n; i++) {
-    const x1 = a + i * dx, y1 = h(x1);
-    if (Number.isFinite(y0) && Number.isFinite(y1)) {
-      if (y0 === 0) add(x0);
-      else if (y0 * y1 < 0) {
-        let lo = x0, hi = x1, flo = y0;
-        for (let k = 0; k < 80; k++) {
-          const mid = (lo + hi) / 2, fm = h(mid);
-          if (!Number.isFinite(fm)) break;
-          if (flo * fm <= 0) hi = mid; else { lo = mid; flo = fm; }
-        }
-        add((lo + hi) / 2);
-      } else if (Number.isFinite(ym) && Math.abs(y0) < Math.abs(ym) && Math.abs(y0) < Math.abs(y1)) {
-        // lokalt minimum af |h| – mulig dobbeltrod, hvor grafen kun rører
-        let lo = x0 - dx, hi = x1;
-        for (let k = 0; k < 100; k++) {
-          const m1 = lo + (hi - lo) / 3, m2 = hi - (hi - lo) / 3;
-          if (Math.abs(h(m1)) < Math.abs(h(m2))) hi = m2; else lo = m1;
-        }
-        add((lo + hi) / 2);
-      }
-    }
-    ym = y0; x0 = x1; y0 = y1;
-  }
-  if (Number.isFinite(y0) && y0 === 0) add(x0);
-  return roots.sort((p, q) => p - q);
-}
-
 function solver(root) {
   const { graphBox, panel } = exploreLayout(root);
   const g = new Graph(graphBox, { xmin: -10, xmax: 10, ymin: -7, ymax: 7 });
@@ -363,16 +328,17 @@ function solver(root) {
   const examples = [['x^2 - 3', '2x'], ['2^x', '10'], ['ln(x)', '1'], ['sin(x)', '0,5'], ['(x-1)^2', '0'], ['x^3 - 4x', '1']];
   const chips = el('div', { class: 'chips small' }, examples.map(([l, r]) => {
     const b = el('button', { type: 'button', class: 'chip' }, `${l} = ${r}`);
-    b.addEventListener('click', () => { left.value = l; right.value = r; solve(); });
+    b.addEventListener('click', () => { left.value = l; right.value = r; left.dispatchEvent(new Event('input')); right.dispatchEvent(new Event('input')); });
     return b;
   }));
 
   panel.append(
     el('div', { class: 'fn-list' },
-      el('div', { class: 'fn-row' }, el('span', { class: 'swatch', style: 'background: var(--c1)' }), el('label', { class: 'fn-input' }, el('span', {}, 'Venstre'), left)),
-      el('div', { class: 'fn-row' }, el('span', { class: 'swatch', style: 'background: var(--c2)' }), el('label', { class: 'fn-input' }, el('span', {}, 'Højre'), right)),
+      el('div', { class: 'fn-row' }, el('span', { class: 'swatch', style: 'background: var(--c1)' }), el('label', { class: 'fn-input' }, el('span', {}, 'Venstre'), left), attachPreview(left)),
+      el('div', { class: 'fn-row' }, el('span', { class: 'swatch', style: 'background: var(--c2)' }), el('label', { class: 'fn-input' }, el('span', {}, 'Højre'), right), attachPreview(right)),
       el('div', { class: 'interval' }, el('span', {}, 'Søg efter løsninger for x mellem'), from, el('span', {}, 'og'), to),
       err),
+    mathKeyboard(),
     result,
     el('div', { class: 'panel-label' }, 'Eksempler'),
     chips,

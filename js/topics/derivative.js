@@ -2,6 +2,7 @@ import { Graph } from '../graph.js';
 import { el, math, tex, slider, toggle, exploreLayout, card, hint, escapeHtml } from '../ui.js';
 import { rint, pick, shuffle, tn, pt, eq, polyTex, linTex, round, num, plus, near } from '../util.js';
 import { tryCompile } from '../parser.js';
+import { attachPreview } from '../mathinput.js';
 
 /** Numerisk differentialkvotient (central differens). */
 export function nd(f, x) {
@@ -59,7 +60,7 @@ function explore(root) {
   const customRow = el('div', { class: 'custom-fn', hidden: true });
   const customInput = el('input', { type: 'text', value: s.custom, spellcheck: 'false', autocomplete: 'off', 'aria-label': 'Egen funktion' });
   const customErr = el('div', { class: 'err' });
-  customRow.append(el('label', { class: 'fn-input' }, el('span', { html: tex('f(x)=') }), customInput), customErr);
+  customRow.append(el('label', { class: 'fn-input' }, el('span', { html: tex('f(x)=') }), customInput), attachPreview(customInput, { prefix: 'f(x)=' }), customErr);
   customInput.addEventListener('input', () => {
     const r = tryCompile(customInput.value);
     customErr.textContent = r.error ?? '';

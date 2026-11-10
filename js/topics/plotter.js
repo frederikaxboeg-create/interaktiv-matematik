@@ -1,6 +1,7 @@
 import { Graph } from '../graph.js';
 import { el, tex, exploreLayout, card } from '../ui.js';
 import { tryCompile } from '../parser.js';
+import { attachPreview, mathKeyboard } from '../mathinput.js';
 
 const EXAMPLES = ['x^2 - 4', '2sin(x)', '3·0,8^x', 'sqrt(x)', '1/x', 'ln(x)', '(x-1)(x+2)(x-3)/3', 'e^(-x^2)'];
 
@@ -34,6 +35,7 @@ export function mountPlotter(root) {
     list.append(el('div', { class: 'fn-row' },
       el('span', { class: 'swatch', style: `background: var(${r.color})` }),
       el('label', { class: 'fn-input' }, el('span', { html: tex(`${r.name}(x)=`) }), input),
+      attachPreview(input, { prefix: `${r.name}(x)=` }),
       err));
   }
 
@@ -42,14 +44,14 @@ export function mountPlotter(root) {
     b.addEventListener('click', () => {
       const r = rows.find((x) => !x.src.trim()) ?? rows[rows.length - 1];
       r.input.value = e;
-      r.compile();
-      g.draw();
+      r.input.dispatchEvent(new Event('input'));
     });
     return b;
   }));
 
   panel.append(
     list,
+    mathKeyboard(),
     el('div', { class: 'panel-label' }, 'Eksempler – klik for at tilføje'),
     examples,
     card('Sådan skriver du', `

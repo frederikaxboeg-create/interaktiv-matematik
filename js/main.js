@@ -5,6 +5,8 @@ import { Graph } from './graph.js';
 import { mountPractice } from './practice.js';
 import * as progress from './progress.js';
 import { setupPwa } from './pwa.js';
+import help from './topics/help.js';
+import worksheet, { mountWorksheet } from './topics/worksheet.js';
 
 const app = document.getElementById('app');
 const nav = document.getElementById('nav');
@@ -14,8 +16,11 @@ const NAV = [
   { id: '', label: 'Emner', href: '#/' },
   { id: 'interaktiv', label: 'Interaktive øvelser', href: '#/interaktiv' },
   { id: 'ligninger', label: 'Løs ligninger', href: '#/ligninger' },
+  { id: 'cas', label: 'CAS', href: '#/cas' },
   { id: 'graftegner', label: 'Graftegner', href: '#/graftegner' },
+  { id: 'hjaelp', label: 'Hjælp', href: '#/hjaelp' },
 ];
+const PAGES = [help, { ...worksheet, tabs: [{ id: 'ark', label: 'Regneark', mount: mountWorksheet }] }];
 
 const STATUS = {
   done: ['Gennemgået', 's-done'],
@@ -84,6 +89,10 @@ function renderHome() {
           el('div', { class: 'topic-formula', html: tex('y=f(x)') }),
           el('h3', {}, 'Graftegner'),
           el('p', {}, 'Skriv dine egne funktioner og se graferne. Op til fire ad gangen.')),
+        el('a', { class: 'topic-card tool', href: '#/cas' },
+          el('div', { class: 'topic-formula', html: tex("\\operatorname{diff}(x^3,\\,x)=3x^2") }),
+          el('h3', {}, 'CAS-regneark'),
+          el('p', {}, 'Regn som i Maple: definér funktioner, differentiér, integrér, løs ligninger og tegn grafer.')),
         el('a', { class: 'topic-card tool', href: '#/ligninger/loeser' },
           el('div', { class: 'topic-formula', html: tex('f(x)=g(x)') }),
           el('h3', {}, 'Ligningsløser'),
@@ -101,6 +110,7 @@ function renderHome() {
 }
 
 function tabsFor(t) {
+  if (t.tabs) return t.tabs;
   const tabs = [];
   if (t.learn) tabs.push({ id: 'laer', label: t.learnLabel ?? 'Lær', mount: (b) => renderLearn(b, t) });
   if (t.explore) tabs.push({ id: 'udforsk', label: 'Udforsk', mount: (b) => t.explore(b) });
@@ -127,7 +137,7 @@ function renderTopic(t, tabId) {
     el('section', { class: 'topic-head' },
       el('div', { class: 'topic-title' },
         el('h1', {}, t.title),
-        el('span', { class: 'topic-formula-inline', html: tex(t.formula) }),
+        t.formula ? el('span', { class: 'topic-formula-inline', html: tex(t.formula) }) : null,
         st ? el('span', { class: `status ${st[1]}` }, st[0]) : null),
       el('p', { class: 'lead' }, t.desc),
       tabs.length > 1 ? el('div', { class: 'tabs', role: 'tablist' }, tabs.map((x) => el('a', {
@@ -157,7 +167,7 @@ function route() {
   for (const a of nav.children) a.classList.toggle('active', a.dataset.id === navId);
   if (id !== current) window.scrollTo(0, 0);
   current = id;
-  const topic = [...topics, interactive].find((t) => t.id === id);
+  const topic = [...topics, interactive, ...PAGES].find((t) => t.id === id);
   if (topic) renderTopic(topic, tab);
   else if (id === 'graftegner') renderPlotter();
   else renderHome();

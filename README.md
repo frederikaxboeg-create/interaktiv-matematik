@@ -18,7 +18,11 @@ Appen følger kernestoffet i Matematik A og er delt op i kategorier:
   - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen
 - **Interaktive øvelser** – alle opgaver, hvor man løser ved at trække i grafer, punkter og vektorer
 - **Løs ligninger** – otte ligningstyper med trin-for-trin-løsninger, en metodeoversigt og en ligningsløser
+- **CAS-regneark** – regn som i Maple: `f := x -> …`, `diff`, `int`, `solve`, `fsolve`, `factor`, `expand`, `evalf`, `subs` og `plot`
 - **Graftegner**
+- **Hjælp** – alt om siden, matematiksproget og CAS-kommandoerne
+
+Alle indtastningsfelter viser det, du skriver, som pæn matematik (2D), mens du skriver.
 
 Emner fra kernestoffet, der endnu ikke er lavet, står som "Kommer senere" på forsiden.
 
@@ -58,7 +62,9 @@ index.html          Skal for appen (topbjælke + <main>)
 css/style.css       Alt design, inkl. mørk tilstand
 js/main.js          Routing (#/emne, #/emne/oev) og forside
 js/graph.js         Interaktivt koordinatsystem på canvas (zoom, panorering, trækbare punkter)
-js/parser.js        Sikker parser til udtryk som "2x^2 - 3x + 1" og "e^(0,5x)"
+js/cas.js           CAS-motor: parser, 2D-visning (TeX), forenkling, diff, int, solve
+js/parser.js        Udtryk i x → funktion (bygger på cas.js)
+js/mathinput.js     Live formelvisning og matematiktastatur
 js/practice.js      Opgavemotor: tjek af svar, hint, løsning, point
 js/progress.js      Point og fremskridt i localStorage
 js/ui.js, util.js   DOM-hjælpere, KaTeX-formler, talformatering med decimalkomma
