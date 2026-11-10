@@ -216,7 +216,7 @@ const exercises = [
         },
         check: (s) => dot(a, s.v) === 0 && len(s.v) > 0,
         hint: 'Skalarproduktet skal være 0. Tværvektoren $\\hat a=\\begin{pmatrix}-a_2\\\\a_1\\end{pmatrix}$ står altid vinkelret på $\\vec a$.',
-        solution: `Fx tværvektoren $\\hat a=${vt(-a.y, a.x)}$, for $${vt(a.x, a.y)}\\cdot${vt(-a.y, a.x)}=${a.x}\\cdot${par(-a.y)}+${a.y}\\cdot${par(a.x)}=0$. Alle vektorer på den stiplede linje (undtagen nulvektoren) virker.`,
+        solution: `Fx tværvektoren $\\hat a=${vt(-a.y, a.x)}$, for $${vt(a.x, a.y)}\\cdot${vt(-a.y, a.x)}=${a.x}\\cdot${par(-a.y)}+${par(a.y)}\\cdot${par(a.x)}=0$. Alle vektorer på den stiplede linje (undtagen nulvektoren) virker.`,
       };
     },
   },

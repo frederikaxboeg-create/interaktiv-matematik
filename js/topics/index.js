@@ -9,6 +9,7 @@ import integral from './integral.js';
 import diffeq from './diffeq.js';
 import trig from './trig.js';
 import vectors from './vectors.js';
+import circle from './circle.js';
 import probability from './probability.js';
 import normal from './normal.js';
 import equations from './equations.js';
@@ -26,10 +27,10 @@ export const AREAS = [
   {
     id: 'geometri',
     title: 'Geometri, trigonometri og vektorer',
-    desc: 'Trekanter, sinus og cosinus, og vektorer i planen.',
-    topics: [trig, vectors],
+    desc: 'Trekanter, sinus og cosinus, vektorer i planen, linjer og cirkler.',
+    topics: [trig, vectors, circle],
     status: { trigonometri: 'done', vektorer: 'done' },
-    planned: ['Analytisk plangeometri og cirklens ligning', 'Vektorer i rummet'],
+    planned: ['Vektorer i rummet'],
   },
   {
     id: 'funktioner',
