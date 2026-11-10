@@ -10,6 +10,7 @@ import diffeq from './diffeq.js';
 import trig from './trig.js';
 import vectors from './vectors.js';
 import probability from './probability.js';
+import normal from './normal.js';
 import equations from './equations.js';
 
 // status: 'done' = gennemgået, 'now' = forløb i gang, 'next' = næste forløb
@@ -41,10 +42,10 @@ export const AREAS = [
   {
     id: 'sandsynlighed',
     title: 'Sandsynlighed og statistik',
-    desc: 'Kombinatorik, sandsynlighed og binomialfordelingen.',
-    topics: [probability],
+    desc: 'Kombinatorik, sandsynlighed, binomialfordelingen og normalfordelingen.',
+    topics: [probability, normal],
     status: { sandsynlighed: 'done' },
-    planned: ['Deskriptiv statistik', 'Normalfordelingen', 'Hypotesetest i binomialfordelingen'],
+    planned: ['Deskriptiv statistik', 'Hypotesetest i binomialfordelingen'],
   },
 ];
 

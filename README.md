@@ -15,7 +15,7 @@ Appen følger kernestoffet i Matematik A og er delt op i kategorier:
   - *Tal og algebra:* Procent og rente
   - *Geometri, trigonometri og vektorer:* Trigonometri, Vektorer i planen
   - *Funktioner og infinitesimalregning:* Lineære, andengrads-, eksponentielle og potensfunktioner, Differentialregning, Integralregning, Differentialligninger
-  - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen
+  - *Sandsynlighed og statistik:* Sandsynlighedsregning og binomialfordelingen, Normalfordelingen
 - **Interaktive øvelser** – alle opgaver, hvor man løser ved at trække i grafer, punkter og vektorer
 - **Løs ligninger** – otte ligningstyper med trin-for-trin-løsninger, en metodeoversigt og en ligningsløser
 - **CAS-regneark** – regn som i Maple: `f := x -> …`, `diff`, `int`, `solve`, `fsolve`, `factor`, `expand`, `evalf`, `subs` og `plot`
