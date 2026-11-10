@@ -4,6 +4,12 @@
 
 export function setupPwa() {
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    // Når en ny version er installeret, genindlæses siden én gang, så man ser den med det samme.
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController && !reloaded) { reloaded = true; location.reload(); }
+    });
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(() => { /* appen virker fint uden */ });
     });

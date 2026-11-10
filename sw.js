@@ -2,7 +2,7 @@
  * Strategi: svar straks fra cachen og hent en frisk version i baggrunden
  * (stale-while-revalidate), så opdateringer slår igennem ved næste åbning.
  * Hæv CACHE-versionen, når du udgiver ændringer. */
-const CACHE = 'interaktiv-matematik-v2';
+const CACHE = 'interaktiv-matematik-v3';
 const FILES = [
   './',
   'index.html',
@@ -60,7 +60,7 @@ const FILES = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
